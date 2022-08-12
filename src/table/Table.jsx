@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { pokeInfo } from '../api/PedidoPoke';
+import { pokeInfo } from '../api/pedido';
 import {AiOutlineArrowLeft, AiOutlineArrowRight} from "react-icons/ai";
 import Form from '../form/Form'
 

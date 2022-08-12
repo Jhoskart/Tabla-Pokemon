@@ -1,3 +1,4 @@
+
 function validate(data) {
     
     const validateName = (name) => {
