@@ -1,30 +1,58 @@
 import { useState, useEffect } from 'react';
 import { pokeInfo } from '../api/PedidoPoke';
 import {AiOutlineArrowLeft, AiOutlineArrowRight} from "react-icons/ai";
+import validate from '../validate/validate';
 
 
-export const HomePage = () => {
+export const Table = () => {
 
     const [ pokemons, setPokemons ] = useState([])
 
+    const [ currentPage, setCurrentPage ] = useState(0) //State para manejar la paginación
+    const [ search, setSearch ] = useState(''); //State para manejar la busqueda
+    const [error, setError] = useState({}); //State para manejar los errores
+    const [disabled, setDisabled] = useState(true); //state para deshabilitar el boton submit
+
+    const [newPokemon, setNewPokemon] = useState({
+        id: '',
+        name: "",
+        types: "",
+        image: "",
+        height: "",
+        weight: ""
+    })
+
     useEffect(() => {
+
         pokeInfo().then(e => setPokemons(e));
-    }, [])
 
-    const [ currentPage, setCurrentPage ] = useState(0)
-    const [ search, setSearch ] = useState('');
+        if ( //Validacion habilitar el boton submit
+            newPokemon.name.length > 0 &&
+            newPokemon.name.length <= 10 &&
+            isNaN(newPokemon.name) && 
+            !error.hasOwnProperty("image") &&
+            !error.hasOwnProperty("height") &&
+            !error.hasOwnProperty("weight")
+    ) {
+      setDisabled(false); //si todo esta correcto se habilitara el boton submit
+    } else {
+      setDisabled(true); //si no se deshabilitara el boton submit
+    };
+    }, [error, disabled])
 
+    ////////// Pokemons filtrados por busqueda y paginados //////////
 
     const filteredPokemons = () => {
 
         if( search.length === 0 ) return pokemons.slice(currentPage, currentPage + 5);
 
-        // Si hay algo en la caja de texto
+        // si el search no esta vacio, filtrara los pokemons por el search
         const filtered = pokemons.filter( poke => poke.name.includes( search ) );
         return filtered.slice( currentPage, currentPage + 5);
     }
 
-    
+    /////////////// Paginacion ///////////////
+
     const nextPage = () => {
         if ( pokemons.filter( poke => poke.name.includes( search ) ).length > currentPage + 5 )
             setCurrentPage( currentPage + 5 );
@@ -35,22 +63,18 @@ export const HomePage = () => {
             setCurrentPage( currentPage - 5 );
     }
 
+    /////////////// Busqueda ///////////////
+
     const onSearchChange = ({ target }) => {
         setCurrentPage(0);
         setSearch( target.value );
     }
 
-    const [newPokemon, setNewPokemon] = useState({
-        id: '',
-        name: "",
-        types: "",
-        image: "",
-        height: "",
-        weight: ""
-    })
+    /////////////// Submit ///////////////
     
     const handleFormChange = (e) =>{
         e.preventDefault()
+        setError(validate({ ...newPokemon, [e.target.name]: e.target.value })); //se valida el input
         setNewPokemon({
             ...newPokemon,
             [e.target.name]: e.target.value
@@ -87,7 +111,6 @@ export const HomePage = () => {
         setPokemons(newPokemons)
     }
 
-
     return (
         <div className="mt-5">
             
@@ -96,12 +119,17 @@ export const HomePage = () => {
 
             <h2>New Pokemon</h2>
             <form onSubmit={handleFormSubmit} id="form" className='mb-4'>
-                <input type="text" name='name' placeholder="Name" required="required" onChange={handleFormChange}/>
-                <input type="text" name='types' placeholder="Types" required="required" onChange={handleFormChange}  className="ms-2"/>
-                <input type="text" name='weight' placeholder="Weight" required="required" onChange={handleFormChange} className="ms-2" />
-                <input type="text" name='height' placeholder="Height" required="required" onChange={handleFormChange} className="ms-2" />
-                <input type="url" name='image' placeholder="Image" required="required" onChange={handleFormChange} className="ms-2" />
-                <button type="submit" className="ms-2 btn btn-primary mb-2">Add</button>
+                <input type="text" name='name' placeholder="Name" required="required" onChange={handleFormChange} value={newPokemon.name}/>
+                {error.name && <p>{error.name}</p>}
+                <input type="text" name='types' placeholder="Types" required="required" onChange={handleFormChange}  className="ms-2" value={newPokemon.types} />
+                {error.types && <p>{error.types}</p>}
+                <input type="text" name='weight' placeholder="Weight" required="required" onChange={handleFormChange} className="ms-2" value={newPokemon.weight} />
+                {error.weight && <p>{error.weight}</p>}
+                <input type="text" name='height' placeholder="Height" required="required" onChange={handleFormChange} className="ms-2" value={newPokemon.height} />
+                {error.height && <p>{error.height}</p>}
+                <input type="url" name='image' placeholder="Image" required="required" onChange={handleFormChange} className="ms-2" value={newPokemon.image} />
+                {error.image && <p>{error.image}</p>}
+                <button type="submit" disabled={disabled} className="ms-2 btn btn-primary mb-2">Add</button>
             </form>
 
             <input 
@@ -125,7 +153,6 @@ export const HomePage = () => {
                     </tr>
                 </thead>
                 <tbody>
-
                     {
                         filteredPokemons().map( ({ id, name, image, weight, height, types }) => (
                             <tr key={ id }>
@@ -145,7 +172,6 @@ export const HomePage = () => {
                             </tr>
                         ))
                     }
-
                 </tbody>
             </table>
 

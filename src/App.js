@@ -1,10 +1,10 @@
-import { HomePage } from'./home/Home'
+import { Table } from'./table/Table';
 import './App.css'
 
 function App() {
   return (
     <div>
-      <HomePage />
+      <Table />
     </div>
   );
 }
