@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import validate from '../validate/validate'
+import validate from '../../validate/validate'
 
 
 export default function Form({ pokemons, setPokemons }) {
@@ -11,7 +11,7 @@ export default function Form({ pokemons, setPokemons }) {
         id: '',
         name: "",
         types: "",
-        image: "",
+        //image: "",
         height: "",
         weight: ""
     })
@@ -31,7 +31,7 @@ export default function Form({ pokemons, setPokemons }) {
             id: pokemons.length + 1,
             name: newPokemon.name,
             types: newPokemon.types,
-            image: newPokemon.image,
+            //image: newPokemon.image,
             height: newPokemon.height,
             weight: newPokemon.weight
         }
@@ -42,7 +42,7 @@ export default function Form({ pokemons, setPokemons }) {
         setNewPokemon({
             name: "",
             types: "",
-            image: "",
+            //image: "",
             height: "",
             weight: ""
         })
@@ -55,8 +55,8 @@ export default function Form({ pokemons, setPokemons }) {
         if ( //Validacion habilitar el boton submit
             newPokemon.name.length > 0 &&
             newPokemon.name.length <= 10 &&
-            isNaN(newPokemon.name) && 
-            !error.hasOwnProperty("image") &&
+            // isNaN(newPokemon.name) && 
+            // !error.hasOwnProperty("image") &&
             !error.hasOwnProperty("height") &&
             !error.hasOwnProperty("weight")
     ) {
@@ -72,24 +72,20 @@ export default function Form({ pokemons, setPokemons }) {
             <form onSubmit={handleFormSubmit} id="form" className='mb-4'>
                 <div className='d-flex'>
                     <div>
-                        <input type="text" name='name' placeholder="Name" required="required" onChange={handleFormChange} value={newPokemon.name}/>
+                        <input type="text" name='name' placeholder="Name" required="required" onChange={handleFormChange} value={newPokemon.name} autoComplete="off" require pattern='^[a-zA-Z]+$' title="Debes rellenar el campo Nombre"/>
                         {error.name && <p>{error.name}</p>}
                     </div>
                     <div>
-                        <input type="text" name='types' placeholder="Types" required="required" onChange={handleFormChange}  className="ms-2" value={newPokemon.types} />
+                        <input type="text" name='types' placeholder="Types" required="required" onChange={handleFormChange}  className="ms-2" value={newPokemon.types} autoComplete="off" />
                         {error.types && <p>{error.types}</p>}
                     </div>
                     <div>
-                        <input type="text" name='weight' placeholder="Weight" required="required" onChange={handleFormChange} className="ms-2" value={newPokemon.weight} />
+                        <input type="text" name='weight' placeholder="Weight" required="required" onChange={handleFormChange} className="ms-2" value={newPokemon.weight} autoComplete="off" />
                         {error.weight && <p>{error.weight}</p>}
                     </div>
                     <div>
-                        <input type="text" name='height' placeholder="Height" required="required" onChange={handleFormChange} className="ms-2" value={newPokemon.height} />
+                        <input type="text" name='height' placeholder="Height" required="required" onChange={handleFormChange} className="ms-2" value={newPokemon.height} autoComplete="off" />
                         {error.height && <p>{error.height}</p>}
-                    </div>
-                    <div>
-                        <input type="url" name='image' placeholder="Image" required="required" onChange={handleFormChange} className="ms-2" value={newPokemon.image} />
-                        {error.image && <p>{error.image}</p>}
                     </div>
                     <button type="submit" disabled={disabled} className="ms-2 btn btn-primary mb-2">Add</button>
                 </div>
